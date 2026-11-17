@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>EmergencyCare 360 – Prototype</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{--bg:#f3f8fc;--card:#fff;--ink:#12263f;--mute:#5b6f86;--line:#d9e4ee;--blue:#1d5fb8;--blue-d:#0f3d7a;--green:#1f9d6b;--mint:#e3f5ec;--sky:#e6f0fb;--warn:#b86e00;--warnbg:#fff3dc;--red:#b42a3a;--redbg:#fde8ea;
+ --nav:#0f3d7a;--navink:#e6f0fb;
+ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0c1522;--card:#14233a;--ink:#e8f0fa;--mute:#9bb0c8;--line:#26395a;--blue:#6aa6f0;--blue-d:#9cc4f7;--green:#4fd0a0;--mint:#12372c;--sky:#173558;--warn:#f0b24f;--warnbg:#3a2d12;--red:#f08a96;--redbg:#3d1a22;--nav:#0a1a30;--navink:#cfe0f5}}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,sans-serif;font-size:16px;line-height:1.5}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+.app{display:grid;grid-template-columns:240px 1fr;min-height:100vh}
+nav{background:var(--nav);color:var(--navink);padding:20px 14px;display:flex;flex-direction:column;gap:6px}
+.brand{font-weight:700;font-size:19px;color:#fff;padding:0 8px 14px}
+.brand small{display:block;font-weight:400;font-size:13px;color:var(--navink);opacity:.8}
+.role{display:flex;background:rgba(255,255,255,.1);border-radius:10px;padding:3px;margin-bottom:12px}
+.role button{flex:1;border:0;background:none;color:var(--navink);padding:8px 4px;border-radius:8px;font:inherit;font-size:14px;cursor:pointer}
+.role button.on{background:#fff;color:var(--blue-d);font-weight:700}
+.nav-item{border:0;background:none;color:var(--navink);text-align:left;padding:10px 12px;border-radius:8px;font:inherit;cursor:pointer}
+.nav-item:hover{background:rgba(255,255,255,.08)}.nav-item.on{background:rgba(255,255,255,.16);color:#fff;font-weight:700}
+.sim{margin-top:auto;font-size:13px;background:rgba(255,255,255,.08);padding:10px;border-radius:8px}
+main{padding:26px 30px 40px;max-width:1180px;width:100%}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+h1{font-size:26px;margin:0}h2{font-size:18px;margin:0 0 12px}
+.lang{display:flex;gap:4px}.lang button{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:6px 12px;border-radius:8px;font:inherit;cursor:pointer}
+.lang button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px}
+.grid{display:grid;gap:16px}.g4{grid-template-columns:repeat(4,1fr)}.g2{grid-template-columns:1.4fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}
+.stat b{display:block;font-size:30px;color:var(--blue-d)}.stat span{color:var(--mute);font-size:14px}
+label{display:block;font-size:14px;font-weight:700;margin:12px 0 4px}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);font:inherit}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid var(--blue);outline-offset:1px}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.btn{background:var(--blue);color:#fff;border:0;border-radius:8px;padding:11px 18px;font:inherit;font-weight:700;cursor:pointer}
+.btn.sec{background:var(--sky);color:var(--blue-d)}
+.err{color:var(--red);font-size:13px;min-height:18px}
+.chk{display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-size:15px}.chk input{width:auto;margin-top:5px}
+.pill{display:inline-block;padding:3px 10px;border-radius:99px;font-size:13px;font-weight:700;white-space:nowrap}
+.s0{background:var(--sky);color:var(--blue-d)}.s1{background:var(--warnbg);color:var(--warn)}.s2{background:#ece6fb;color:#5a3fb0}.s3{background:var(--mint);color:var(--green)}.s4{background:var(--redbg);color:var(--red)}.s5{background:var(--line);color:var(--mute)}
+.pri{font-size:13px;color:var(--mute)}
+.steps{display:flex;gap:6px;margin:14px 0}.steps div{flex:1;text-align:center;font-size:12px;color:var(--mute)}
+.steps i{display:block;height:8px;border-radius:4px;background:var(--line);margin-bottom:6px}.steps .done i{background:var(--green)}.steps .cur i{background:var(--blue)}.steps .cur{color:var(--ink);font-weight:700}
+table{width:100%;border-collapse:collapse;font-size:15px}th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line)}th{font-size:13px;color:var(--mute)}
+tbody tr{cursor:pointer}tbody tr:hover,tbody tr.sel{background:var(--sky)}
+.tools{display:flex;gap:10px;margin-bottom:12px}.tools input{max-width:260px}.tools select{max-width:230px}
+.miss{background:var(--warnbg);color:var(--warn);padding:10px 12px;border-radius:8px;font-size:14px;margin:10px 0}
+.vit{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:10px 0}.vit div{background:var(--sky);border-radius:8px;padding:8px;text-align:center;font-size:12px;color:var(--mute)}.vit b{display:block;font-size:16px;color:var(--ink)}
+.bar{height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin:4px 0 10px}.bar i{display:block;height:100%;background:var(--green)}
+.note{list-style:none;margin:0;padding:0}.note li{padding:8px 0;border-bottom:1px solid var(--line);font-size:14px}.note time{display:block;color:var(--mute);font-size:12px}
+.toast{position:fixed;right:20px;bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--blue-d);color:#fff;padding:12px 16px;border-radius:10px;opacity:0;transform:translateY(8px);transition:.25s;pointer-events:none}.toast.show{opacity:1;transform:none}
+.hide{display:none}.small{font-size:13px;color:var(--mute)}.scroll{overflow-x:auto}
+@media (max-width:900px){.app{grid-template-columns:1fr}nav{flex-direction:row;flex-wrap:wrap;align-items:center}.sim{display:none}.g4{grid-template-columns:1fr 1fr}.g2,.g3{grid-template-columns:1fr}main{padding:18px 16px 40px}}
+@media (prefers-reduced-motion:reduce){.toast{transition:none}}
+</style>
+</head>
+<body>
+<div class="app">
+ <nav aria-label="Main">
+  <div class="brand">EmergencyCare 360<small>Prototype for HackForge 2K26</small></div>
+  <div class="role" role="group" aria-label="Choose interface"><button id="r-p" class="on">Patient</button><button id="r-s">Hospital staff</button></div>
+  <div id="menu" style="display:contents"></div>
+  <div class="sim">All patients here are fictional. The system only organizes information; clinical priority is set by staff.</div>
+ </nav>
+ <main id="main"></main>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const ST=["Registered","Waiting for assessment","Under assessment","Treatment in progress","Referred","Discharged"];
+const HI={"Registered":"पंजीकृत","Waiting for assessment":"जांच की प्रतीक्षा","Under assessment":"जांच जारी","Treatment in progress":"इलाज जारी","Referred":"रेफर किया गया","Discharged":"छुट्टी दी गई"};
+const T={en:{reg:"Emergency registration",mine:"My status",name:"Full name",age:"Age",phone:"Phone number",kin:"Family contact number",sym:"Symptoms",hist:"Medical history",all:"Allergies",rep:"Upload previous reports",cons:"Notify my family contact when my status changes",go:"Submit registration",upd:"Updates",qr:"Show this QR code at the desk",none:"No updates yet.",hello:"Hello",req:"Please fill in name, age, phone and symptoms."},
+ hi:{reg:"आपातकालीन पंजीकरण",mine:"मेरी स्थिति",name:"पूरा नाम",age:"आयु",phone:"फ़ोन नंबर",kin:"परिवार का संपर्क नंबर",sym:"लक्षण",hist:"चिकित्सा इतिहास",all:"एलर्जी",rep:"पिछली रिपोर्ट अपलोड करें",cons:"स्थिति बदलने पर मेरे परिवार को सूचित करें",go:"पंजीकरण जमा करें",upd:"अपडेट",qr:"काउंटर पर यह QR कोड दिखाएं",none:"अभी कोई अपडेट नहीं।",hello:"नमस्ते",req:"कृपया नाम, आयु, फ़ोन और लक्षण भरें।"}};
+const now=()=>new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"});
+let P=[
+ {id:"EC-1001",name:"Rohan Mehta",age:34,phone:"98100 00011",kin:"98100 00012",sym:"Chest tightness and shortness of breath since morning",hist:"Hypertension",all:"None known",v:{hr:104,bp:"146/92",spo:96,t:"98.4"},st:1,pri:"Urgent",dept:"Cardiology",cons:true,rep:"ECG_2025.pdf",at:"09:12",bed:null},
+ {id:"EC-1002",name:"Sunita Rao",age:61,phone:"98100 00021",kin:"",sym:"Fall at home, pain in left hip",hist:"Type 2 diabetes",all:"Penicillin",v:{hr:88,bp:"130/84",spo:98,t:"98.1"},st:2,pri:"Urgent",dept:"Orthopedics",cons:false,rep:"",at:"09:40",bed:"O-3"},
+ {id:"EC-1003",name:"Imran Khan",age:8,phone:"98100 00031",kin:"98100 00032",sym:"High fever for two days, vomiting",hist:"",all:"",v:{hr:118,bp:"",spo:97,t:"101.8"},st:0,pri:"Not set",dept:"Pediatrics",cons:true,rep:"",at:"10:05",bed:null},
+ {id:"EC-1004",name:"Meena Joshi",age:47,phone:"98100 00041",kin:"98100 00042",sym:"Deep cut on forearm",hist:"None",all:"Latex",v:{hr:82,bp:"122/80",spo:99,t:"98.2"},st:3,pri:"Standard",dept:"Surgery",cons:true,rep:"",at:"08:30",bed:"S-1"},
+ {id:"EC-1005",name:"Arjun Sethi",age:29,phone:"98100 00051",kin:"98100 00052",sym:"Severe headache, sensitivity to light",hist:"Migraine",all:"None known",v:{hr:76,bp:"118/76",spo:99,t:"98.0"},st:4,pri:"Standard",dept:"Neurology",cons:false,rep:"MRI_2024.pdf",at:"07:55",bed:null},
+ {id:"EC-1006",name:"Kavita Nair",age:52,phone:"98100 00061",kin:"98100 00062",sym:"Abdominal pain",hist:"Gallstones",all:"None known",v:{hr:80,bp:"124/82",spo:98,t:"98.6"},st:5,pri:"Standard",dept:"General",cons:true,rep:"",at:"06:50",bed:null}];
+const RES=[["Emergency beds",12,18],["ICU beds",3,10],["Ward beds",22,40],["Ventilators",4,8],["Staff on duty",14,20]];
+let LOG=[],NOTE=[],me=P[0],role="p",tab="reg",view="over",lang="en",sel=null,flt="",q="",chart=null;
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const stName=i=>lang==="hi"&&role==="p"?HI[ST[i]]:ST[i];
+const miss=p=>[!p.hist&&"medical history",!p.all&&"allergies",!p.kin&&"family contact",!p.v.bp&&"blood pressure"].filter(Boolean);
+function toast(m){const t=$("#toast");t.textContent=m;t.classList.add("show");clearTimeout(t._h);t._h=setTimeout(()=>t.classList.remove("show"),2400)}
+function menu(){const items=role==="p"?[["reg",T[lang].reg],["mine",T[lang].mine]]:[["over","Overview"],["list","Patients"],["audit","Audit log"]];
+ $("#menu").innerHTML=items.map(([k,l])=>`<button class="nav-item ${(role==="p"?tab:view)===k?"on":""}" data-k="${k}">${l}</button>`).join("");
+ document.querySelectorAll(".nav-item").forEach(b=>b.onclick=()=>{role==="p"?tab=b.dataset.k:view=b.dataset.k;render()})}
+function pill(i){return `<span class="pill s${i}">${stName(i)}</span>`}
+function steps(i){return `<div class="steps" aria-label="Progress">${ST.slice(0,4).map((s,k)=>`<div class="${k<i?"done":k===i?"cur":""}"><i></i>${lang==="hi"?HI[s]:s}</div>`).join("")}</div>`}
+function langBar(){return `<div class="lang"><button data-l="en" class="${lang==="en"?"on":""}">English</button><button data-l="hi" class="${lang==="hi"?"on":""}">हिन्दी</button></div>`}
+function render(){$("#r-p").className=role==="p"?"on":"";$("#r-s").className=role==="s"?"on":"";menu();
+ if(role==="p")patient();else staff();
+ document.querySelectorAll("[data-l]").forEach(b=>b.onclick=()=>{lang=b.dataset.l;render()})}
+function patient(){const t=T[lang];
+ if(tab==="reg"){$("#main").innerHTML=`<div class="top"><h1>${t.reg}</h1>${langBar()}</div>
+ <div class="card" style="max-width:720px"><div class="row2"><div><label for="f-n">${t.name}</label><input id="f-n" autocomplete="off"></div><div><label for="f-a">${t.age}</label><input id="f-a" type="number" min="0" max="120"></div></div>
+ <div class="row2"><div><label for="f-p">${t.phone}</label><input id="f-p" inputmode="tel"></div><div><label for="f-k">${t.kin}</label><input id="f-k" inputmode="tel"></div></div>
+ <label for="f-s">${t.sym}</label><textarea id="f-s" rows="3"></textarea>
+ <div class="row2"><div><label for="f-h">${t.hist}</label><input id="f-h"></div><div><label for="f-l">${t.all}</label><input id="f-l"></div></div>
+ <label for="f-r">${t.rep}</label><input id="f-r" type="file" accept=".pdf,.jpg,.png">
+ <label class="chk"><input type="checkbox" id="f-c"><span>${t.cons}</span></label>
+ <div class="err" id="err" role="alert"></div><button class="btn" id="go">${t.go}</button></div>`;
+ $("#go").onclick=()=>{const g=i=>$(i).value.trim();if(!g("#f-n")||!g("#f-a")||!g("#f-p")||!g("#f-s")){$("#err").textContent=t.req;return}
+  const p={id:"EC-"+(1001+P.length),name:g("#f-n"),age:+g("#f-a"),phone:g("#f-p"),kin:g("#f-k"),sym:g("#f-s"),hist:g("#f-h"),all:g("#f-l"),v:{hr:"",bp:"",spo:"",t:""},st:0,pri:"Not set",dept:"Unassigned",cons:$("#f-c").checked,rep:($("#f-r").files[0]||{}).name||"",at:now(),bed:null};
+  P.unshift(p);me=p;LOG.unshift([now(),"System","Registered "+p.id]);tab="mine";render();toast("Registered. Your ID is "+p.id)}}
+ else{const p=me;const n=NOTE.filter(x=>x[0]===p.id);
+ $("#main").innerHTML=`<div class="top"><h1>${t.hello}, ${esc(p.name.split(" ")[0])}</h1>${langBar()}</div>
+ <div class="grid g2"><div class="card"><h2>${t.mine}</h2>${pill(p.st)}<p class="small" style="margin-top:10px">${esc(p.id)} · ${p.at}</p>${steps(p.st)}
+ ${miss(p).length&&lang==="en"?`<div class="miss">Please tell staff your ${miss(p).join(", ")} to complete your record.</div>`:""}
+ <p class="small">${p.cons?"Family contact will be notified of status changes.":"Family notifications are off."}</p></div>
+ <div class="card" style="text-align:center"><div id="qr" style="display:inline-block;padding:8px;background:#fff;border-radius:8px"></div><p class="small">${t.qr}<br>${esc(p.id)}</p></div></div>
+ <div class="card" style="margin-top:16px"><h2>${t.upd}</h2><ul class="note">${n.length?n.map(x=>`<li>${esc(x[2])}<time>${x[1]}</time></li>`).join(""):`<li>${t.none}</li>`}</ul></div>`;
+ if(typeof QRCode!=="undefined"){new QRCode($("#qr"),{text:p.id,width:128,height:128})}else $("#qr").textContent=p.id}}
+function staff(){
+ if(view==="audit"){$("#main").innerHTML=`<div class="top"><h1>Audit log</h1></div><div class="card"><ul class="note">${LOG.length?LOG.map(l=>`<li>${esc(l[2])}<time>${l[0]} · ${l[1]}</time></li>`).join(""):"<li>No staff actions yet. Update a patient to see entries here.</li>"}</ul></div>`;return}
+ if(view==="list"){const rows=P.filter(p=>(!flt||p.st==flt)&&(!q||(p.name+p.id).toLowerCase().includes(q.toLowerCase())));
+ $("#main").innerHTML=`<div class="top"><h1>Patients</h1></div><div class="grid g2" style="grid-template-columns:1.5fr 1fr"><div class="card"><div class="tools"><input id="q" placeholder="Search name or ID" aria-label="Search" value="${esc(q)}"><select id="fl" aria-label="Filter by status"><option value="">All statuses</option>${ST.map((s,i)=>`<option value="${i}" ${flt==i&&flt!==""?"selected":""}>${s}</option>`).join("")}</select></div>
+ <div class="scroll"><table><thead><tr><th>Patient</th><th>Priority</th><th>Status</th><th>Arrived</th></tr></thead><tbody>${rows.map(p=>`<tr data-id="${p.id}" class="${sel===p.id?"sel":""}" tabindex="0"><td><b>${esc(p.name)}</b><br><span class="pri">${p.id} · ${p.age} yrs</span></td><td>${p.pri}</td><td>${pill(p.st)}</td><td>${p.at}</td></tr>`).join("")||"<tr><td colspan=4>No patients match.</td></tr>"}</tbody></table></div></div><div id="det"></div></div>`;
+ $("#q").oninput=e=>{q=e.target.value;staff();$("#q").focus();$("#q").setSelectionRange(q.length,q.length)};$("#fl").onchange=e=>{flt=e.target.value;staff()};
+ document.querySelectorAll("tbody tr[data-id]").forEach(r=>{r.onclick=()=>{sel=r.dataset.id;staff()};r.onkeydown=e=>{if(e.key==="Enter"){sel=r.dataset.id;staff()}}});detail();return}
+ const c=ST.map((s,i)=>P.filter(p=>p.st===i).length);
+ $("#main").innerHTML=`<div class="top"><h1>Emergency overview</h1></div>
+ <div class="grid g4"><div class="card stat"><b>${P.length}</b><span>Registered today</span></div><div class="card stat"><b>${c[1]+c[0]}</b><span>Waiting</span></div><div class="card stat"><b>${c[2]+c[3]}</b><span>In assessment or treatment</span></div><div class="card stat"><b>${P.filter(p=>miss(p).length).length}</b><span>Records with missing information</span></div></div>
+ <div class="grid g2" style="margin-top:16px;grid-template-columns:1.3fr 1fr"><div class="card"><h2>Patients by status</h2><div style="height:260px"><canvas id="ch" role="img" aria-label="Bar chart of patients by status"></canvas></div></div>
+ <div class="card"><h2>Beds and resources</h2>${RES.map(r=>`<div>${r[0]} <b style="float:right">${r[1]} free of ${r[2]}</b></div><div class="bar"><i style="width:${r[1]/r[2]*100}%"></i></div>`).join("")}</div></div>`;
+ if(typeof Chart!=="undefined"){const dark=matchMedia("(prefers-color-scheme:dark)").matches;if(chart)chart.destroy();chart=new Chart($("#ch"),{type:"bar",data:{labels:ST.map(s=>s.replace(" ","\n")),datasets:[{data:c,backgroundColor:"#1d5fb8",borderRadius:6}]},options:{maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,ticks:{stepSize:1,color:dark?"#9bb0c8":"#5b6f86"}},x:{ticks:{color:dark?"#9bb0c8":"#5b6f86",font:{size:10}}}}}})}}
+function detail(){const p=P.find(x=>x.id===sel),el=$("#det");if(!p){el.innerHTML=`<div class="card"><h2>Patient details</h2><p class="small">Select a patient to review symptoms, vitals and update their status.</p></div>`;return}
+ el.innerHTML=`<div class="card"><h2>${esc(p.name)}, ${p.age}</h2><p class="small">${p.id} · ${esc(p.dept)} · Phone ${esc(p.phone)}</p>
+ <p><b>Symptoms:</b> ${esc(p.sym)}</p><p><b>History:</b> ${esc(p.hist||"Not provided")}<br><b>Allergies:</b> ${esc(p.all||"Not provided")}<br><b>Report:</b> ${esc(p.rep||"None uploaded")}</p>
+ <div class="vit"><div><b>${p.v.hr||"–"}</b>Pulse</div><div><b>${p.v.bp||"–"}</b>BP</div><div><b>${p.v.spo?p.v.spo+"%":"–"}</b>SpO₂</div><div><b>${p.v.t||"–"}</b>Temp °F</div></div>
+ ${miss(p).length?`<div class="miss">Missing: ${miss(p).join(", ")}</div>`:""}
+ <label for="ns">Status</label><select id="ns">${ST.map((s,i)=>`<option value="${i}" ${p.st===i?"selected":""}>${s}</option>`).join("")}</select>
+ <label for="np">Priority (set by clinician)</label><select id="np">${["Not set","Immediate","Urgent","Standard"].map(s=>`<option ${p.pri===s?"selected":""}>${s}</option>`).join("")}</select>
+ <p style="margin-top:14px"><button class="btn" id="sv">Save update</button></p></div>`;
+ $("#sv").onclick=()=>{const s=+$("#ns").value,pr=$("#np").value;const ch=[];if(s!==p.st)ch.push("status to "+ST[s]);if(pr!==p.pri)ch.push("priority to "+pr);
+  if(!ch.length){toast("No changes to save");return}
+  p.st=s;p.pri=pr;LOG.unshift([now(),"Dr. Demo","Updated "+p.id+": "+ch.join(", ")]);
+  NOTE.unshift([p.id,now(),"Your status is now: "+ST[s]+(p.cons?". Family contact notified.":"")]);toast("Saved. Patient notified.");staff()}}
+$("#r-p").onclick=()=>{role="p";render()};$("#r-s").onclick=()=>{role="s";render()};
+render();
+</script>
+</body>
+</html>
